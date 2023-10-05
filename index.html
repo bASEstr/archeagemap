@@ -1,0 +1,385 @@
+
+<!DOCTYPE html>
+<HTML>
+	<HEAD>
+		<title>ArcheAge interactive map</title>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<meta name="description" content="ArcheAge interactive map. World place of Nui's Tears, Ore, Trees, Herbs, hidden Quests and more." />
+		<meta name="keywords" content="Archeage, map, interactive, world" />
+
+		<link href='http://fonts.googleapis.com/css?family=Roboto+Condensed&subset=latin,cyrillic-ext' rel='stylesheet' type='text/css'>
+		<link href='http://fonts.googleapis.com/css?family=Marck+Script&subset=latin,cyrillic' rel='stylesheet' type='text/css'>
+		<link rel="stylesheet" href="./css/Leaflet.Coordinates-0.1.3.css" />
+		<link rel="stylesheet" href="./css/leaflet.css" />
+		<link rel="stylesheet" href="./css/leaflet.draw.css" type="text/css" />
+		<link rel="stylesheet" href="./css/quickbox.css" type="text/css" />	
+		<link rel="stylesheet" href="./css/style.css" type="text/css" />	
+
+		<script type="text/javascript" src="./js/leaflet.js"></script>
+		<script type="text/javascript" src="./js/Leaflet.Coordinates-0.1.3.min.js"></script>
+		<script type="text/javascript" src="./js/leaflet.draw.js"></script>
+		<script type="text/javascript" src="./js/jquery.min.js"></script>
+		<script type="text/javascript" src="./js/quickbox.js"></script>
+
+		<!--[if lte IE 8]>
+			<link rel="stylesheet" href="css/leaflet.ie.css" />
+			<link rel="stylesheet" href="css/leaflet.draw.ie.css" />
+		<![endif]-->
+
+		<style>
+			.leaflet-container .leaflet-control-attribution,
+			.leaflet-container .leaflet-control-scale {font-size: 12px;}
+		</style>
+			</HEAD>
+
+	<BODY style="background: #c7b873; margin:0px;">		
+		<script>
+			var popupcount = 1;
+		</script>
+
+		<div class="results" id="results" name="results"></div>
+		<div class="editor" id="editor" name="editor"></div>
+
+					<!-- <div id="logo" style="position:fixed; left:0px; top:5px; width:220px; height:114px; z-index:20;"><a href="http://forum.instant-gaming.fr/" target=_new><img src="./images/instant.png" width="256" height="256" border="0"></a></div> -->
+					<div id="custom menu" style="position: absolute;z-index: 30;right: 0px;top: 0px;background: url('./images/paper.png');background-repeat: no-repeat;padding: 25px 11px;width: 240px;height: 387px;"></div>
+					<!-- <div id="DrawBtn" class="DrawBtn" onClick="CheckEdit()" style="position:fixed; left:10px; top:160px;"><div class="block" style="margin: 6px 0px 0px 6px;" title="Нанести метки на карту"><img src="./images/icons/edit_ico.png" width="24" height="24" border="0"></div><div class="block mapButtonLetter">&nbsp; M</div></div> -->
+					<div id="map"></div>
+
+		
+			<div id="bottom" class="bottom-map">
+
+</div>
+			<script src="./js/icons.js"></script>
+		
+<script>
+
+
+		var some_text = "";
+		
+		var locations = new L.LayerGroup();
+		var pvplayer = new L.LayerGroup();
+				
+	var UserCoord = L.control();	
+	var Line = L.control();
+	var Empty = L.control();
+
+	UserCoord.onAdd = function (map) {
+		this._div = L.DomUtil.create('div', 'UserCoord');
+		this._div.innerHTML = '<div style="padding-top: 25px;text-align: left; width: 230px;font-family: Marck Script; font-size: 25px;"><select name="we" id="we" class="coords-slct"><option id="1" value="-1">W</option><option id="2" value="1">E</option></select> <input type="text" name="r1" id="r1" maxlength="2" value="0" class="coords-inpt" onclick="this.select();">° <input type="text" name="m1" id="m1" maxlength="2" value="0" class="coords-inpt" onclick="this.select();">&rsquo; <input type="text" name="s1" id="s1" maxlength="2" value="0" class="coords-inpt" onclick="this.select();">&quot; <br><select name="ns" id="ns" class="coords-slct"><option value="1">S</option><option value="-1">N</option></select> <input type="text" name="r2" id="r2" maxlength="2" value="0" class="coords-inpt" onclick="this.select();">° <input type="text" name="m2" id="m2" maxlength="2" value="0" class="coords-inpt" onclick="this.select();">&rsquo; <input type="text" name="s2" id="s2" maxlength="2" value="0" class="coords-inpt" onclick="this.select();">&quot;<div id="create" class="crtmrk_btn" onClick="DropMarker()">Placer un marqueur</div></div>'
+		return this._div;
+	};
+	
+	Empty.onAdd = function (map) {
+		this._div = L.DomUtil.create('div', 'Empty');
+		this._div.innerHTML = '<div><br></div>'
+		return this._div;
+	};
+	
+	Line.onAdd = function (map) {
+		this._div = L.DomUtil.create('div', 'Line');
+		this._div.innerHTML = '<div style="margin-top: -10px; margin-bottom: -10px; padding-right: 35px; "><div style="position: absolute;right: 33px;top: -10px;font-size: 10px;font-style: italic;color: #97805c;">'+some_text+'</div><img src="./images/line.png" width="200" height="1"></div>'
+		return this._div;
+	};
+
+var cmAttr = '&copy База знаний Archeage.org.ua', cmUrl = './images/maps/{z}/{x}/{y}.jpg'; var minimal   = L.tileLayer(cmUrl, {attribution:'<a href="http://aadb.info/doc/" target=_new>руководство</a>',minZoom:1,maxZoom:7,noWrap:true,tms: true});
+var map = L.map('map', {center: [-68, -90],zoomControl:false , zoom: 3, layers: [minimal]});
+	UserCoord.addTo(map);
+		
+</script>
+		
+		<script>
+		
+			var MapClicker=0;
+			var Pxl = "";
+			var MarkerDrw = "";
+			
+			var GlobalMarkerLatLng = '';
+			var GlobalMarkerRad = '';
+			var GlobalMarkerText = '';
+			var GlobalMarkerIcon = '';
+			var GlobalMarkerLink = '';
+			var GlobalMarkerTimer = '';
+			
+			var MarkerArrayList = new Array;
+			function CheckEdit(){
+				if (MapClicker == 1) {editsSwitch = 0; document.getElementById('map').style.cursor = ''; document.getElementById('DrawBtn').innerHTML = '<div class="block" style="margin: 6px 0px 0px 6px;" title="Закончить редактирование"><img src="./images/icons/edit_ico.png" width="24" height="24" border="0"></div><div class="block mapButtonLetter">&nbsp; M</div>';}
+				else {editsSwitch = 1; document.getElementById('map').style.cursor = 'url("mouse_target.cur"), auto'; document.getElementById('DrawBtn').innerHTML = '<div class="block" style="margin: 6px 0px 0px 6px;" title="Начать редактирование"><img src="./images/icons/edit_ico_end.png" width="24" height="24" border="0"></div><div class="block mapButtonLetter">esc</div>';}
+				MapClicker = editsSwitch;
+			}
+
+			function ChangeIcon (id,type){
+				if (type != 1){
+					MarkerArrayList[id-1].setIcon(eval('selectedIcon'+type));
+				} else {MarkerArrayList[id-1].setIcon(eval('p'+id+'Icon'));}
+				
+				document.getElementById("gmico"+id).value = type;
+			}
+
+			function DropMarker(){
+				var we = document.getElementById("we").value;
+				var r1 = document.getElementById('r1').value;
+				var m1 = document.getElementById('m1').value;
+				var s1 = document.getElementById('s1').value;
+				var ns = document.getElementById('ns').value;
+				var r2 = document.getElementById('r2').value;
+				var m2 = document.getElementById('m2').value;
+				var s2 = document.getElementById('s2').value;
+				
+				console.log(we)
+				console.log(ns)
+				
+				var WESecond = r1*3600+m1*60+s1*1;
+				var WEPxl = WESecond/7.7253*we;
+				
+				var NSSecond = r2*3600+m2*60+s2*1;
+				var NSPxl = NSSecond/7.7922*ns;
+				
+				console.log(WESecond)
+				console.log(WEPxl)
+				console.log(NSSecond)
+				console.log(NSPxl)
+				var m = {x:10337+WEPxl, y:19973+NSPxl}
+		
+
+				console.log([m.x, m.y])
+
+				var marker = L.marker(map.unproject([m.x, m.y], map.getMaxZoom())).addTo(map);
+				map.panTo(marker.getLatLng());		
+			}
+
+			function DropMarkerAt(m)
+			{
+				var marker = L.marker(map.unproject([m.x, m.y], map.getMaxZoom())).addTo(map);
+				map.panTo(marker.getLatLng());
+			}
+
+			function delMarker(id){
+				action = 'delete'+id;
+				$.ajax({
+					type: 'POST',
+					url: 'script.php',
+					data: 'action='+action+'&gmlatlng='+GlobalMarkerLatLng+'&gmrad='+GlobalMarkerRad+'&gmtxt='+GlobalMarkerText+'&gmico='+GlobalMarkerIcon+'&gmllnk='+GlobalMarkerLink+'&gmltmr='+GlobalMarkerTimer+'&lang=eng',
+				
+					success: function(data) {
+						$('.results').html(data);
+					}
+				});
+				
+				map.removeLayer(MarkerArrayList[id-1]);		
+
+				MarkerArrayList.splice(id-1,1);
+				tempMarkerArrayList = new Array;
+				for (var i = 0; i < MarkerArrayList.length; i++) {
+					if ( i in MarkerArrayList ) {
+						tempMarkerArrayList.push(MarkerArrayList[i]);
+					}
+				}
+				MarkerArrayList = tempMarkerArrayList; 
+				
+			}
+	
+			function setTimer(id){
+				document.getElementById('editor').innerHTML = "<div class='bckgr_shdw'><div class='pl_marker_edit'><div class='close_wnd'><img src='images/cancel.png' onClick='CloseEditor()'></div><br><div class='gotimer' id='gotimer' name='gotimer'></div><br><div class='timer_field'>Set timer:<br><br><input type='text' maxlength='2' id='days' name='days' value='0' class='text_field_30' onclick='this.select();'>Days <input type='text' maxlength='2' id='hour' name='hour' value='0' class='text_field_30' onclick='this.select();'>Hours <input type='text' maxlength='2' id='minutes' name='minutes' value='0' class='text_field_30' onclick='this.select();'>Minutes </div><br><br><div class='editor_save_bttn' onClick='SaveTimer("+id+")'>Save</div></div></div>";
+
+				if (document.getElementById('gmltmr'+id).value != "0:0:0" && document.getElementById('gmltmr'+id).value != ""){
+
+					current_day = 13;
+					current_hour = 13;
+					current_minute = 26;
+					splittime = document.getElementById('gmltmr'+id).value;
+					clock_arr = splittime.split(':');
+
+					left_for_days = clock_arr[0] - current_day;
+					left_for_hours = clock_arr[1] - current_hour;
+					left_for_minutes = clock_arr[2] - current_minute;
+					left_for_seconds = 0;
+
+					if (left_for_minutes < 0) {left_for_hours = left_for_hours - 1;left_for_minutes = left_for_minutes + 60;}
+					if (left_for_hours < 0) {left_for_days = left_for_days - 1;left_for_hours = left_for_hours + 24;}
+
+					if (left_for_days == 1) {word_day = "Days";}
+					else if ((left_for_days > 1) && (left_for_days < 5)) {word_day = "Days";}	
+					else if (left_for_days == 0 || left_for_days > 4) {word_day = "Days";}
+					document.getElementById('gotimer').innerHTML = "You set next time for this marker: <br><br><div class='clock' style='font-size: 28px; text-align: center;'>"+left_for_days+" "+word_day+" "+left_for_hours+" Hours "+left_for_minutes+" Minutes</div>";
+				}
+
+			}
+						
+			function SaveTimer(id){
+				MarkerArrayList[id-1].setIcon(timer);
+				
+				endday = 13 + Number(document.getElementById('days').value);
+				endhour = 13 + Number(document.getElementById('hour').value);
+				endminut = 26 + Number(document.getElementById('minutes').value);
+				if (endminut >= 60) {endminut = endminut - 60;endhour = endhour + 1;}
+				if (endhour >= 24) {endhour = endhour - 24;endday = endday + 1;}
+				enddate = endday+":"+endhour+":"+endminut;
+				document.getElementById('gmltmr'+id).value = enddate;
+				document.getElementById('gmico'+id).value = 't';
+				
+				RebuildStrings()
+				CloseEditor();
+			}
+
+			
+			function OpenEditor(elementid){			
+				if (document.getElementById('gmllnk'+elementid).value == "") {image_link = "./images/no_mini_img.png";} else {image_link = document.getElementById('gmllnk'+elementid).value;}
+				document.getElementById('editor').innerHTML = "<div class='bckgr_shdw'><div class='pl_marker_edit'><div class='close_wnd'><img src='./images/cancel.png' onClick='CloseEditor()'></div>Edit the marker:<br><br><textarea id='editorfield' name='editorfield' style='resize:none;width:290px;height:100px;font-family:\"Roboto Condensed\", Arial;font-size:12px;'></textarea><div>Icon: <div class='block link' onClick='ChangeIcon("+elementid+", 1)'><img src='./images/icons/p"+elementid+".png'></div><div class='block link' onClick='ChangeIcon("+elementid+", 2)'><img src='./images/icons/user_icon_1.png'></div><div class='block link' onClick='ChangeIcon("+elementid+", 3)'><img src='./images/icons/user_icon_2.png'></div><div class='block link' onClick='ChangeIcon("+elementid+", 4)'><img src='./images/icons/user_icon_3.png'></div><div class='block link' onClick='ChangeIcon("+elementid+", 5)'><img src='./images/icons/user_icon_4.png'></div><div class='block link' onClick='ChangeIcon("+elementid+", 6)'><img src='./images/icons/user_icon_5.png'></div><div class='block link' onClick='ChangeIcon("+elementid+", 7)'><img src='./images/icons/user_icon_6.png'></div><div class='block link' onClick='ChangeIcon("+elementid+", 8)'><img src='./images/icons/user_icon_7.png'></div><div class='block link' onClick='ChangeIcon("+elementid+", 9)'><img src='./images/icons/user_icon_8.png'></div><div class='block link' onClick='ChangeIcon("+elementid+", 10)'><img src='./images/icons/user_icon_9.png'></div><div class='block link' onClick='ChangeIcon("+elementid+", 11)'><img src='./images/icons/user_icon_10.png'></div><div class='block link' onClick='ChangeIcon("+elementid+", 12)'><img src='./images/icons/user_icon_11.png'></div><div class='block link' onClick='ChangeIcon("+elementid+", 13)'><img src='./images/icons/user_icon_12.png'></div></div><div>URL-path for marker image:<br><input type='text' id='editorlink' name='editorlink' class='txtfld_editor_imgurl'><img src='"+image_link+"' width='100' height='61' style='float:left;margin-right:10px;'></div><div class='crtmrk_btn' style='float: right;padding-right: 55px;' onClick='SaveToField("+elementid+")'>Save</div></div></div>";
+				
+				
+				
+				document.getElementById('editorfield').value = document.getElementById('gmtxt'+elementid).value
+				document.getElementById('editorlink').value = document.getElementById('gmllnk'+elementid).value
+			}
+			
+			function CloseEditor(){
+				document.getElementById('editor').innerHTML = "";
+			}		
+		
+			function SaveToField(elementid){
+				document.getElementById('gmtxt'+elementid).value = document.getElementById('editorfield').value;
+				document.getElementById('gmllnk'+elementid).value = document.getElementById('editorlink').value;
+				CloseEditor(); RebuildStrings();
+			}
+			
+			function RebuildStrings(){		
+				GlobalMarkerLatLngRebuild = (GlobalMarkerLatLng.slice(0, -1)).split('#');				
+				allsteps = GlobalMarkerLatLngRebuild.length;
+				GlobalMarkerLatLng = ''; GlobalMarkerRad = ''; GlobalMarkerText = ''; GlobalMarkerIcon = ''; GlobalMarkerLink = ''; GlobalMarkerTimer = '';
+				
+				for (i = 1; i <= allsteps; i++){
+					GlobalMarkerLatLng = GlobalMarkerLatLng + document.getElementById('gmlatlng'+i).value + '#';
+					GlobalMarkerRad = GlobalMarkerRad + document.getElementById('gmrad'+i).value + '#';
+					GlobalMarkerText = GlobalMarkerText + document.getElementById('gmtxt'+i).value + '#';
+					GlobalMarkerIcon = GlobalMarkerIcon + document.getElementById('gmico'+i).value + '#';
+					GlobalMarkerLink = GlobalMarkerLink + document.getElementById('gmllnk'+i).value + '#';
+					GlobalMarkerTimer = GlobalMarkerTimer + document.getElementById('gmltmr'+i).value + '#';
+					
+					if (document.getElementById('gmico'+i).value == 1){
+						MarkerArrayList[i-1].setIcon(eval('p'+i+'Icon'));
+					}
+				}
+			}
+			
+			function CloseWndAfterSave() {
+				document.getElementById('results').innerHTML = "";
+				document.getElementById('map').innerHTML = "";
+			}
+/*			
+			function CheckUpdate (linkchain){
+				arr = linkchain.split(',');
+				var end = (arr.length / 2)+1;
+				var count = 1;
+				chaintext = document.getElementById('line'+count).value;
+				chainlink = document.getElementById('link'+count).value;
+				count ++;
+				while (count < end){
+					chaintext = chaintext + '#' + document.getElementById('line'+count).value;
+					chainlink = chainlink + '###' + document.getElementById('link'+count).value;
+					count++;
+				}
+
+				$.ajax({
+				  type: 'POST',
+				  url: 'checkupdate.php',
+				  data: 'chainlinks='+linkchain+'&chaintext='+chaintext+'&chainlink='+chainlink+'&admlink=',
+				  success: function(data) {
+					$('.results').html(data);
+				  }
+				});
+
+			}
+*/			
+			function CheckSave (){
+				GlobalMarkerLatLng_save=GlobalMarkerLatLng.slice(0, -1);
+				GlobalMarkerText_save=GlobalMarkerText.slice(0, -1);
+				GlobalMarkerIcon_save=GlobalMarkerIcon.slice(0, -1);
+				GlobalMarkerLink_save=GlobalMarkerLink.slice(0, -1);
+				GlobalMarkerTimer_save=GlobalMarkerTimer.slice(0, -1);
+			
+				$.ajax({
+				  type: 'POST',
+				  url: 'checksave.php',
+				  data: 'gmlatlng='+GlobalMarkerLatLng_save+'&gmtxt='+GlobalMarkerText_save+'&gmico='+GlobalMarkerIcon_save+'&gmllnk='+GlobalMarkerLink_save+'&gmltmr='+GlobalMarkerTimer_save,
+				  success: function(data) {
+					$('.results').html(data);
+				  }
+				});
+			}
+/*			
+			function SaveRectangle (msg){
+				msg = msg.replace(/LatLng\(/g,"");
+				msg = msg.replace(/\)/g,"");
+				msg = msg.replace(/ /g,"");
+				var chaintext = 'rectangle';
+				var chainlink = '';
+
+				$.ajax({
+				  type: 'POST',
+				  url: 'checksave.php',
+				  data: 'chainlinks='+msg+'&chaintext='+chaintext+'&chainlink='+chainlink,
+				  success: function(data) {
+					$('.results').html(data);
+				  }
+				});
+			}
+*/
+function onClick(e) {
+
+	if (MapClicker == 1){
+		GlobalCount = MarkerArrayList.length;
+		MarkerDrw = eval("p"+Number(GlobalCount+1)+"Icon");
+		action = "crtmarker";
+		
+		MarkerArrayList.push(new L.marker(e.latlng, {id: 'Marker 1', icon: MarkerDrw,}));
+		MarkerCh = MarkerArrayList[GlobalCount];
+		
+		mltlng = String(MarkerCh.getLatLng()); var mpxl = String(map.project(MarkerCh.getLatLng(), map.getMaxZoom()));
+		mltlng = mltlng.replace("LatLng(",""); mpxl = mpxl.replace("Point(","");
+		mltlng = mltlng.replace(")",""); mpxl = mpxl.replace(")","");
+		mrkLatLng = mltlng.replace(" ",""); mrkPxl = mpxl.replace(" ","");
+		markerpopuptext = 'Marker '+Number(GlobalCount+1);
+
+		GlobalMarkerLatLng = GlobalMarkerLatLng + mrkLatLng + '#';
+		GlobalMarkerRad = GlobalMarkerRad + mrkPxl + '#';
+		GlobalMarkerText = GlobalMarkerText + 'Marker '+Number(GlobalCount+1)+'#';
+		GlobalMarkerIcon = GlobalMarkerIcon + '1'+ '#';
+		GlobalMarkerLink = GlobalMarkerLink + '' + '#';
+		GlobalMarkerTimer = GlobalMarkerTimer + '0:0:0' + '#';
+			
+		$.ajax({
+			type: 'POST',
+			url: 'script.php',
+			data: 'action='+action+'&gmlatlng='+GlobalMarkerLatLng+'&gmrad='+GlobalMarkerRad+'&gmtxt='+GlobalMarkerText+'&gmico='+GlobalMarkerIcon+'&gmllnk='+GlobalMarkerLink+'&gmltmr='+GlobalMarkerTimer+'&lang=eng',
+		
+			success: function(data) {
+				$('.results').html(data);
+			}
+		});
+
+
+		MarkerCh.bindPopup(markerpopuptext);
+		map.addLayer(MarkerCh);
+			}
+	
+};
+function key_check() {
+	window.status=event.keyCode;
+		
+	if (event.keyCode==77) {
+		if (MapClicker == 0) {MapClicker = 1; document.getElementById('map').style.cursor = 'url("mouse_target.cur"), auto'; document.getElementById('DrawBtn').innerHTML = '<div class="block" style="margin: 6px 0px 0px 6px;" title="Начать редактирование"><img src="./images/icons/edit_ico_end.png" width="24" height="24" border="0"></div><div class="block mapButtonLetter">esc</div>';}
+	}
+			
+	if (event.keyCode==27) {
+		if (MapClicker == 1) {MapClicker = 0; document.getElementById('map').style.cursor = ''; document.getElementById('DrawBtn').innerHTML = '<div class="block" style="margin: 6px 0px 0px 6px;" title="Закончить редактирование"><img src="./images/icons/edit_ico.png" width="24" height="24" border="0"></div><div class="block mapButtonLetter">&nbsp; M</div>';}
+	}
+}
+
+	map.on('click', onClick);
+	document.onkeydown=key_check;
+
+		</script>
+		
+			</BODY>
+</html>
