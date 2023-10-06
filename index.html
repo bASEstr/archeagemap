@@ -160,7 +160,7 @@
 		function DropMarkers(markers) {
 			console.log('markers', markers)
 			console.log('atob', atob(markers))
-			var obj = JSON.parse(atob(markers));
+			var array = JSON.parse(atob(markers));
 			array.forEach(element => {
 				var WESecond = element.r1 * 3600 + element.m1 * 60 + element.s1 * 1;
 				var WEPxl = WESecond / 7.7253 * element.we;
